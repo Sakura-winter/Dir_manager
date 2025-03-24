@@ -42,6 +42,13 @@ class DirectoryManager(QMainWindow):
         self.sort_by_dropdown.currentIndexChanged.connect(self.sort_files)
         self.layout.addWidget(self.sort_by_dropdown)
 
+        # Category Filter Dropdown
+        self.category_filter = QComboBox()
+        self.category_filter.addItems(
+            ["All Files", "Documents", "Images", "Videos", "Audio", "Executables", "Archives", "Others"])
+        self.category_filter.currentIndexChanged.connect(self.apply_category_filter)
+        self.layout.addWidget(self.category_filter)
+
         # Table to display file details
         self.file_table = QTableWidget()
         self.file_table.setColumnCount(4)
@@ -120,6 +127,34 @@ class DirectoryManager(QMainWindow):
                     print(f"Error processing {file_name}: {e}")
 
         self.populate_table()
+
+    def get_category(self, file_ext):
+        """Returns the category of a file based on its extension."""
+        file_ext = file_ext.lower()
+
+        # Define common file categories
+        document_exts = [".pdf", ".doc", ".docx", ".txt", ".ppt", ".pptx", ".xls", ".xlsx"]
+        image_exts = [".jpg", ".jpeg", ".png", ".gif", ".bmp", ".svg"]
+        video_exts = [".mp4", ".mkv", ".avi", ".mov", ".wmv"]
+        audio_exts = [".mp3", ".wav", ".aac", ".flac", ".ogg"]
+        executable_exts = [".exe", ".bat", ".sh", ".msi"]
+        archive_exts = [".zip", ".rar", ".7z", ".tar", ".gz"]
+
+        # Categorize based on extensions
+        if file_ext in document_exts:
+            return "Documents"
+        elif file_ext in image_exts:
+            return "Images"
+        elif file_ext in video_exts:
+            return "Videos"
+        elif file_ext in audio_exts:
+            return "Audio"
+        elif file_ext in executable_exts:
+            return "Executables"
+        elif file_ext in archive_exts:
+            return "Archives"
+        else:
+            return "Others"
 
     def populate_table(self):
         """Populates the table with sorted file data."""
