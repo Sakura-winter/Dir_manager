@@ -1,5 +1,6 @@
 import sys
 import os
+import time
 
 from PyQt6.QtWidgets import (
     QApplication, QMainWindow, QPushButton, QFileDialog,
@@ -106,31 +107,28 @@ class DirectoryManager(QMainWindow):
         self.files_data.clear()
         self.file_table.setRowCount(0)
 
-        files = os.listdir(folder_path)
+        try:
+            files = os.listdir(folder_path)
 
-        for file_name in files:
-            file_path = os.path.join(folder_path, file_name)
+            for file_name in files:
+                file_path = os.path.join(folder_path, file_name)
 
-            if os.path.isfile(file_path):
-                try:
+                if os.path.isfile(file_path):
                     file_size = os.path.getsize(file_path)
                     formatted_size = humanize.naturalsize(file_size)
                     file_ext = os.path.splitext(file_name)[1] or "Unknown"
-                    file_category = self.get_category(file_ext)  # Get file category
-                    self.files_data.append(
-                        (file_name, file_size, file_ext, last_modified, file_category))  # Add category
+                    file_category = self.get_category(file_ext)
 
                     last_modified = os.path.getmtime(file_path)
-                    formatted_modified = humanize.naturaltime(last_modified)
-                    category = self.categorize_file(file_ext)  # Get category
+                    formatted_modified = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(last_modified))
 
-                    # Store data for sorting
-                    self.files_data.append((file_name, file_size, file_ext, last_modified, category))
+                    # Store file data
+                    self.files_data.append((file_name, file_size, file_ext, last_modified, file_category))
 
-                except Exception as e:
-                    print(f"Error processing {file_name}: {e}")
+            self.populate_table()
 
-        self.populate_table()
+        except Exception as e:
+            QMessageBox.critical(self, "Error", f"Failed to list files: {e}")
 
     def get_category(self, file_ext):
         """Returns the category of a file based on its extension."""
@@ -161,12 +159,10 @@ class DirectoryManager(QMainWindow):
             return "Others"
 
     def populate_table(self):
-        """Populates the table with sorted file data."""
-        self.file_table.setColumnCount(5)
-        self.file_table.setHorizontalHeaderLabels(["File Name", "Size", "Type", "Last Modified", "Category"])
+        """Populates the table with sorted file data, including category filtering."""
         self.file_table.setRowCount(0)
 
-        for file_name, file_size, file_ext, last_modified, category in self.files_data:
+        for file_name, file_size, file_ext, last_modified, file_category in self.files_data:
             formatted_size = humanize.naturalsize(file_size)
             formatted_modified = humanize.naturaltime(last_modified)
 
@@ -176,7 +172,9 @@ class DirectoryManager(QMainWindow):
             self.file_table.setItem(row_position, 1, QTableWidgetItem(formatted_size))
             self.file_table.setItem(row_position, 2, QTableWidgetItem(file_ext))
             self.file_table.setItem(row_position, 3, QTableWidgetItem(formatted_modified))
-            self.file_table.setItem(row_position, 4, QTableWidgetItem(category))
+
+        # Apply the category filter immediately after populating
+        self.apply_category_filter()
 
     def sort_files(self):
         """Sorts the files based on the selected sorting method."""
@@ -268,6 +266,19 @@ class DirectoryManager(QMainWindow):
             if file_ext.lower() in extensions:
                 return category
         return "Other"  # Default category if not found
+
+    def apply_category_filter(self):
+        """Filters files based on the selected category."""
+        selected_category = self.category_filter.currentText()
+
+        for row in range(self.file_table.rowCount()):
+            file_ext = self.file_table.item(row, 2).text().lower()
+            file_category = self.get_category(file_ext)
+
+            if selected_category == "All Files" or file_category == selected_category:
+                self.file_table.setRowHidden(row, False)
+            else:
+                self.file_table.setRowHidden(row, True)
 
 
 if __name__ == "__main__":
