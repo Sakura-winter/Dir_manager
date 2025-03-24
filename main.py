@@ -1,12 +1,16 @@
 import sys
 import os
+
 from PyQt6.QtWidgets import (
     QApplication, QMainWindow, QPushButton, QFileDialog,
-    QTableWidget, QTableWidgetItem, QVBoxLayout, QWidget, QLabel, QComboBox
+    QTableWidget, QTableWidgetItem, QVBoxLayout, QWidget, QLabel, QComboBox, QMessageBox
 )
+from PyQt6.QtWidgets import QInputDialog
 from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QIcon
-import humanize  # For better file size formatting (install using: pip install humanize)
+import humanize  # For better file size formatting
+import subprocess  # For opening files
+from PyQt6.QtWidgets import QLineEdit  # Import for search bar
 
 class DirectoryManager(QMainWindow):
     def __init__(self):
@@ -20,6 +24,7 @@ class DirectoryManager(QMainWindow):
         self.central_widget = QWidget()
         self.setCentralWidget(self.central_widget)
         self.layout = QVBoxLayout(self.central_widget)
+        self.setup_search_bar()  # Add search bar
 
         # Label to display selected directory
         self.dir_label = QLabel("No directory selected", self)
@@ -44,6 +49,19 @@ class DirectoryManager(QMainWindow):
         self.file_table.setSortingEnabled(True)  # Enable sorting
         self.layout.addWidget(self.file_table)
 
+        # Buttons for file operations
+        self.open_button = QPushButton("Open File")
+        self.open_button.clicked.connect(self.open_file)
+        self.layout.addWidget(self.open_button)
+
+        self.rename_button = QPushButton("Rename File")
+        self.rename_button.clicked.connect(self.rename_file)
+        self.layout.addWidget(self.rename_button)
+
+        self.delete_button = QPushButton("Delete File")
+        self.delete_button.clicked.connect(self.delete_file)
+        self.layout.addWidget(self.delete_button)
+
         # Storage for file details
         self.files_data = []  # Holds the file info for sorting
 
@@ -53,6 +71,28 @@ class DirectoryManager(QMainWindow):
         if folder_path:
             self.dir_label.setText(f"Selected Directory: {folder_path}")
             self.list_files(folder_path)
+
+    #from PyQt6.QtWidgets import QLineEdit  # Import for search bar
+
+    def setup_search_bar(self):
+        """Creates a search bar to filter files dynamically."""
+        self.search_bar = QLineEdit(self)
+        self.search_bar.setPlaceholderText("Search files...")
+        self.search_bar.textChanged.connect(self.filter_files)
+        self.layout.insertWidget(1, self.search_bar)  # Insert above table
+
+    def filter_files(self):
+        """Filters table rows based on search query."""
+        query = self.search_bar.text().lower()
+
+        for row in range(self.file_table.rowCount()):
+            file_name = self.file_table.item(row, 0).text().lower()
+            file_ext = self.file_table.item(row, 2).text().lower()
+
+            if query in file_name or query in file_ext:
+                self.file_table.setRowHidden(row, False)
+            else:
+                self.file_table.setRowHidden(row, True)
 
     def list_files(self, folder_path):
         """Lists all files in the selected directory and displays them in the table."""
@@ -109,6 +149,66 @@ class DirectoryManager(QMainWindow):
             self.files_data.sort(key=lambda x: x[3], reverse=True)  # Sort by last modified time (latest first)
 
         self.populate_table()  # Update the table after sorting
+
+
+
+    def open_file(self):
+        selected_row = self.file_table.currentRow()
+        if selected_row == -1:
+            return  # No selection
+
+        file_name = self.file_table.item(selected_row, 0).text()
+        folder_path = self.dir_label.text().replace("Selected Directory: ", "").strip()
+        file_path = os.path.join(folder_path, file_name)
+
+        if os.path.exists(file_path):
+            try:
+                os.startfile(file_path)  # Windows
+            except Exception as e:
+                print(f"Error opening file: {e}")
+
+
+
+    def rename_file(self):
+        selected_row = self.file_table.currentRow()
+        if selected_row == -1:
+            return
+
+        file_name = self.file_table.item(selected_row, 0).text()
+        folder_path = self.dir_label.text().replace("Selected Directory: ", "").strip()
+        file_path = os.path.join(folder_path, file_name)
+
+        new_name, ok = QInputDialog.getText(self, "Rename File", "Enter new name:")
+        if ok and new_name:
+            new_path = os.path.join(folder_path, new_name)
+            try:
+                os.rename(file_path, new_path)
+                self.list_files(folder_path)  # Refresh table
+            except Exception as e:
+                print(f"Error renaming file: {e}")
+
+
+
+    def delete_file(self):
+        selected_row = self.file_table.currentRow()
+        if selected_row == -1:
+            return
+
+        file_name = self.file_table.item(selected_row, 0).text()
+        folder_path = self.dir_label.text().replace("Selected Directory: ", "").strip()
+        file_path = os.path.join(folder_path, file_name)
+
+        reply = QMessageBox.question(self, "Confirm Delete", f"Are you sure you want to delete '{file_name}'?",
+                                     QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
+                                     QMessageBox.StandardButton.No)
+
+        if reply == QMessageBox.StandardButton.Yes:
+            try:
+                os.remove(file_path)
+                self.list_files(folder_path)  # Refresh table
+            except Exception as e:
+                print(f"Error deleting file: {e}")
+
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
