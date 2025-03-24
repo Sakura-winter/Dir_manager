@@ -123,9 +123,11 @@ class DirectoryManager(QMainWindow):
 
     def populate_table(self):
         """Populates the table with sorted file data."""
+        self.file_table.setColumnCount(5)
+        self.file_table.setHorizontalHeaderLabels(["File Name", "Size", "Type", "Last Modified", "Category"])
         self.file_table.setRowCount(0)
 
-        for file_name, file_size, file_ext, last_modified in self.files_data:
+        for file_name, file_size, file_ext, last_modified, category in self.files_data:
             formatted_size = humanize.naturalsize(file_size)
             formatted_modified = humanize.naturaltime(last_modified)
 
@@ -135,6 +137,7 @@ class DirectoryManager(QMainWindow):
             self.file_table.setItem(row_position, 1, QTableWidgetItem(formatted_size))
             self.file_table.setItem(row_position, 2, QTableWidgetItem(file_ext))
             self.file_table.setItem(row_position, 3, QTableWidgetItem(formatted_modified))
+            self.file_table.setItem(row_position, 4, QTableWidgetItem(category))
 
     def sort_files(self):
         """Sorts the files based on the selected sorting method."""
