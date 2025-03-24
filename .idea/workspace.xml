@@ -6,7 +6,6 @@
   <component name="ChangeListManager">
     <list default="true" id="8f2271bb-207f-4b0b-aff6-da47d3125bc2" name="Changes" comment="first commit">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -23,6 +22,18 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
+  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
+  "lastFilter": {
+    "state": "OPEN",
+    "assignee": "Sakura-winter"
+  }
+}]]></component>
+  <component name="GithubPullRequestsUISettings"><![CDATA[{
+  "selectedUrlAndAccountId": {
+    "url": "https://github.com/Sakura-winter/Dir_manager.git",
+    "accountId": "6e7f3673-4408-47cc-8f0e-2e363d3b6d4e"
+  }
+}]]></component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 0
 }</component>
@@ -66,7 +77,7 @@
       <workItem from="1742236671254" duration="1032000" />
       <workItem from="1742305458606" duration="4825000" />
       <workItem from="1742742679531" duration="1687000" />
-      <workItem from="1742823353203" duration="422000" />
+      <workItem from="1742823353203" duration="1321000" />
     </task>
     <task id="LOCAL-00001" summary="first commit">
       <option name="closed" value="true" />

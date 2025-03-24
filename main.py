@@ -209,6 +209,23 @@ class DirectoryManager(QMainWindow):
             except Exception as e:
                 print(f"Error deleting file: {e}")
 
+    def categorize_file(self, file_ext):
+        """Returns a category based on file extension."""
+        categories = {
+            "Documents": [".pdf", ".docx", ".txt", ".xlsx", ".pptx"],
+            "Images": [".jpg", ".jpeg", ".png", ".gif", ".bmp"],
+            "Videos": [".mp4", ".mkv", ".avi", ".mov"],
+            "Music": [".mp3", ".wav", ".aac", ".flac"],
+            "Archives": [".zip", ".rar", ".tar", ".gz"],
+            "Executables": [".exe", ".sh", ".bat"],
+            "Code Files": [".py", ".java", ".cpp", ".html", ".js"],
+        }
+
+        for category, extensions in categories.items():
+            if file_ext.lower() in extensions:
+                return category
+        return "Other"  # Default category if not found
+
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
