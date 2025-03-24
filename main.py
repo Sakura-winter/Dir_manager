@@ -95,28 +95,29 @@ class DirectoryManager(QMainWindow):
                 self.file_table.setRowHidden(row, True)
 
     def list_files(self, folder_path):
-        """Lists all files in the selected directory and displays them in the table."""
-        self.files_data.clear()  # Clear previous data
-        self.file_table.setRowCount(0)  # Clear table
+        """Lists all files in the selected directory and categorizes them."""
+        self.files_data.clear()
+        self.file_table.setRowCount(0)
 
         files = os.listdir(folder_path)
 
         for file_name in files:
             file_path = os.path.join(folder_path, file_name)
 
-            if os.path.isfile(file_path):  # Only list files, not directories
+            if os.path.isfile(file_path):
                 try:
                     file_size = os.path.getsize(file_path)
                     formatted_size = humanize.naturalsize(file_size)
                     file_ext = os.path.splitext(file_name)[1] or "Unknown"
                     last_modified = os.path.getmtime(file_path)
                     formatted_modified = humanize.naturaltime(last_modified)
+                    category = self.categorize_file(file_ext)  # Get category
 
                     # Store data for sorting
-                    self.files_data.append((file_name, file_size, file_ext, last_modified))
+                    self.files_data.append((file_name, file_size, file_ext, last_modified, category))
 
                 except Exception as e:
-                    print(f"Error processing {file_name}: {e}")  # Print errors in terminal
+                    print(f"Error processing {file_name}: {e}")
 
         self.populate_table()
 
