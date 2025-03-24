@@ -116,6 +116,10 @@ class DirectoryManager(QMainWindow):
                     file_size = os.path.getsize(file_path)
                     formatted_size = humanize.naturalsize(file_size)
                     file_ext = os.path.splitext(file_name)[1] or "Unknown"
+                    file_category = self.get_category(file_ext)  # Get file category
+                    self.files_data.append(
+                        (file_name, file_size, file_ext, last_modified, file_category))  # Add category
+
                     last_modified = os.path.getmtime(file_path)
                     formatted_modified = humanize.naturaltime(last_modified)
                     category = self.categorize_file(file_ext)  # Get category
