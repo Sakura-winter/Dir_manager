@@ -12,6 +12,7 @@ from PyQt6.QtGui import QIcon
 import humanize  # For better file size formatting
 import subprocess  # For opening files
 from PyQt6.QtWidgets import QLineEdit  # Import for search bar
+from metadata_extractor import get_file_metadata #Import for feature metadata
 
 class DirectoryManager(QMainWindow):
     def __init__(self):
@@ -123,7 +124,8 @@ class DirectoryManager(QMainWindow):
                     formatted_modified = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(last_modified))
 
                     # Store file data
-                    self.files_data.append((file_name, file_size, file_ext, last_modified, file_category))
+                    self.files_data.append((file_name, file_size, file_ext, formatted_modified, file_category))
+
 
             self.populate_table()
 
@@ -163,15 +165,14 @@ class DirectoryManager(QMainWindow):
         self.file_table.setRowCount(0)
 
         for file_name, file_size, file_ext, last_modified, file_category in self.files_data:
-            formatted_size = humanize.naturalsize(file_size)
-            formatted_modified = humanize.naturaltime(last_modified)
+            formatted_size = humanize.naturalsize(file_size)  # Convert file size for display
 
             row_position = self.file_table.rowCount()
             self.file_table.insertRow(row_position)
             self.file_table.setItem(row_position, 0, QTableWidgetItem(file_name))
-            self.file_table.setItem(row_position, 1, QTableWidgetItem(formatted_size))
+            self.file_table.setItem(row_position, 1, QTableWidgetItem(formatted_size))  # Display formatted size
             self.file_table.setItem(row_position, 2, QTableWidgetItem(file_ext))
-            self.file_table.setItem(row_position, 3, QTableWidgetItem(formatted_modified))
+            self.file_table.setItem(row_position, 3, QTableWidgetItem(last_modified))  # Already formatted
 
         # Apply the category filter immediately after populating
         self.apply_category_filter()
@@ -183,15 +184,13 @@ class DirectoryManager(QMainWindow):
         if sort_option == "Name":
             self.files_data.sort(key=lambda x: x[0].lower())  # Sort by file name
         elif sort_option == "Size":
-            self.files_data.sort(key=lambda x: x[1])  # Sort by file size
+            self.files_data.sort(key=lambda x: x[1])  # Sort by actual file size (integer)
         elif sort_option == "Type":
             self.files_data.sort(key=lambda x: x[2].lower())  # Sort by file type
         elif sort_option == "Last Modified":
-            self.files_data.sort(key=lambda x: x[3], reverse=True)  # Sort by last modified time (latest first)
+            self.files_data.sort(key=lambda x: x[3], reverse=True)  # Sort by last modified (latest first)
 
         self.populate_table()  # Update the table after sorting
-
-
 
     def open_file(self):
         selected_row = self.file_table.currentRow()
