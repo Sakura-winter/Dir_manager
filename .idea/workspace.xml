@@ -6,6 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="8f2271bb-207f-4b0b-aff6-da47d3125bc2" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/metadata_extractor.py" beforeDir="false" afterPath="$PROJECT_DIR$/metadata_extractor.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -79,7 +80,7 @@
       <workItem from="1742305458606" duration="4825000" />
       <workItem from="1742742679531" duration="1687000" />
       <workItem from="1742823353203" duration="6151000" />
-      <workItem from="1742888390476" duration="6239000" />
+      <workItem from="1742888390476" duration="7726000" />
     </task>
     <task id="LOCAL-00001" summary="first commit">
       <option name="closed" value="true" />

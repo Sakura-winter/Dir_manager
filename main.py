@@ -12,6 +12,7 @@ from PyQt6.QtGui import QIcon
 import humanize  # For better file size formatting
 import subprocess  # For opening files
 from PyQt6.QtWidgets import QLineEdit  # Import for search bar
+import metadata_extractor
 from metadata_extractor import get_file_metadata #Import for feature metadata
 
 class DirectoryManager(QMainWindow):
@@ -70,6 +71,10 @@ class DirectoryManager(QMainWindow):
         self.delete_button = QPushButton("Delete File")
         self.delete_button.clicked.connect(self.delete_file)
         self.layout.addWidget(self.delete_button)
+
+        self.metadata_button = QPushButton("Show Metadata")
+        self.metadata_button.clicked.connect(self.view_metadata)
+        self.layout.addWidget(self.metadata_button)
 
         # Storage for file details
         self.files_data = []  # Holds the file info for sorting
@@ -278,9 +283,30 @@ class DirectoryManager(QMainWindow):
             else:
                 self.file_table.setRowHidden(row, True)
 
+    def view_metadata(self):
+        """Displays metadata of the selected file."""
+        selected_row = self.file_table.currentRow()
+        if selected_row == -1:
+            QMessageBox.warning(self, "No File Selected", "Please select a file to view metadata.")
+            return
+
+        file_name = self.file_table.item(selected_row, 0).text()
+        folder_path = self.dir_label.text().replace("Selected Directory: ", "").strip()
+        file_path = os.path.join(folder_path, file_name)
+
+        if os.path.exists(file_path):
+            metadata = get_file_metadata(file_path)  # Get metadata
+
+            if metadata:
+                metadata_text = "\n".join([f"{key}: {value}" for key, value in metadata.items()])
+                QMessageBox.information(self, "File Metadata", metadata_text)
+            else:
+                QMessageBox.warning(self, "Error", "Could not retrieve metadata.")
+
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
     window = DirectoryManager()
     window.show()
     sys.exit(app.exec())
+
