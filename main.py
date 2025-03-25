@@ -115,17 +115,17 @@ class DirectoryManager(QMainWindow):
                 file_path = os.path.join(folder_path, file_name)
 
                 if os.path.isfile(file_path):
-                    file_size = os.path.getsize(file_path)
-                    formatted_size = humanize.naturalsize(file_size)
+                    file_size = os.path.getsize(file_path)  # Store raw file size in bytes
+                    formatted_size = humanize.naturalsize(file_size)  # Keep formatted size for display
                     file_ext = os.path.splitext(file_name)[1] or "Unknown"
                     file_category = self.get_category(file_ext)
 
                     last_modified = os.path.getmtime(file_path)
                     formatted_modified = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(last_modified))
 
-                    # Store file data
-                    self.files_data.append((file_name, file_size, file_ext, formatted_modified, file_category))
-
+                    # Store raw file size (for sorting) + formatted size (for display)
+                    self.files_data.append(
+                        (file_name, file_size, formatted_size, file_ext, formatted_modified, file_category))
 
             self.populate_table()
 
@@ -164,18 +164,17 @@ class DirectoryManager(QMainWindow):
         """Populates the table with sorted file data, including category filtering."""
         self.file_table.setRowCount(0)
 
-        for file_name, file_size, file_ext, last_modified, file_category in self.files_data:
-            formatted_size = humanize.naturalsize(file_size)  # Convert file size for display
+        for file_name, file_size, formatted_size, file_ext, last_modified, file_category in self.files_data:
+            formatted_modified = humanize.naturaltime(last_modified)
 
             row_position = self.file_table.rowCount()
             self.file_table.insertRow(row_position)
             self.file_table.setItem(row_position, 0, QTableWidgetItem(file_name))
             self.file_table.setItem(row_position, 1, QTableWidgetItem(formatted_size))  # Display formatted size
             self.file_table.setItem(row_position, 2, QTableWidgetItem(file_ext))
-            self.file_table.setItem(row_position, 3, QTableWidgetItem(last_modified))  # Already formatted
+            self.file_table.setItem(row_position, 3, QTableWidgetItem(formatted_modified))
 
-        # Apply the category filter immediately after populating
-        self.apply_category_filter()
+        self.apply_category_filter()  # Apply category filter after sorting
 
     def sort_files(self):
         """Sorts the files based on the selected sorting method."""
@@ -184,13 +183,13 @@ class DirectoryManager(QMainWindow):
         if sort_option == "Name":
             self.files_data.sort(key=lambda x: x[0].lower())  # Sort by file name
         elif sort_option == "Size":
-            self.files_data.sort(key=lambda x: x[1])  # Sort by actual file size (integer)
+            self.files_data.sort(key=lambda x: x[1], reverse=True)  # Sort by raw file size (integer bytes)
         elif sort_option == "Type":
-            self.files_data.sort(key=lambda x: x[2].lower())  # Sort by file type
+            self.files_data.sort(key=lambda x: x[3].lower())  # Sort by file type
         elif sort_option == "Last Modified":
-            self.files_data.sort(key=lambda x: x[3], reverse=True)  # Sort by last modified (latest first)
+            self.files_data.sort(key=lambda x: x[4], reverse=True)  # Sort by last modified time (latest first)
 
-        self.populate_table()  # Update the table after sorting
+        self.populate_table()  # Update table after sorting
 
     def open_file(self):
         selected_row = self.file_table.currentRow()
