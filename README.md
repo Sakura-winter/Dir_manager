@@ -140,7 +140,7 @@ def sort_files(self):
 ```
 ## 📌 Contributing Guidelines  
 
-We welcome contributions to improve the **AI-Powered Directory Management System**! Follow these guidelines to ensure a smooth and efficient process.  
+I welcome contributions to improve the **AI-Powered Directory Management System**! Follow these guidelines to ensure a smooth and efficient process.  
 
 ---
 
@@ -213,8 +213,6 @@ The **AI-Powered Directory Management System** is designed to be scalable and ex
 - Integrate **voice commands & automation scripts** for seamless user experience.  
 
 ---
-
-### ✅ **These features will make the project even more powerful and user-friendly in the future!** 🚀  
 
 
 ## 📌 Author & Acknowledgments  
