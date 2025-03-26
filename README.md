@@ -156,7 +156,7 @@ We welcome contributions to improve the **AI-Powered Directory Management System
 git clone https://github.com/Sakura-winter/Dir_manager.git
 cd Dir_manager
 ```
-### 3️⃣ Clone Your Forked Repository  
+### 3️⃣ Create a New Branch  
 - Always create a separate branch for new features or fixes:
 ```sh
 git checkout -b feature-new-enhancement
@@ -206,7 +206,11 @@ The **AI-Powered Directory Management System** is designed to be scalable and ex
 
 ### 🔹 **6. Automation Features**  
 - Set up **automated file cleanup** based on user-defined rules.  
-- Implement **scheduled backups** to prevent accidental data loss.  
+- Implement **scheduled backups** to prevent accidental data loss.
+
+### 🔹 **7. Long-Term Vision**  
+- Extend this project into an **AI-driven smart file manager** with advanced **predictive organization**.  
+- Integrate **voice commands & automation scripts** for seamless user experience.  
 
 ---
 
@@ -221,7 +225,8 @@ The **AI-Powered Directory Management System** is designed to be scalable and ex
 📢 **Acknowledgments:**  
 I would like to express my sincere gratitude to **Prof. Navjot Kaur** for assigning this project and providing valuable guidance throughout its development.  
 
-This project was completed as part of my academic coursework, and I appreciate the opportunity to apply my knowledge and skills in building this system.  
+This project was a great learning experience, allowing me to apply my technical skills and explore AI-based file management.  
+
 
 💡 **Thank you for your support and guidance!** 🚀  
 
